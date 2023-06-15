@@ -1,18 +1,41 @@
 # Greek stemmer written in Go
-
 WORK IN PROGRESS!
+This repository contains an implementation of a Greek stemmer in Go programming language, based on the [paper](https://people.dsv.su.se/~hercules/papers/Ntais_greek_stemmer_thesis_final.pdf) written by Georgios Ntais. The stemmer is designed to extract the stem or root form of Greek words, enabling various natural language processing (NLP) tasks such as text analysis, information retrieval, and machine translation.
 
-Based on this [paper](https://people.dsv.su.se/~hercules/papers/Ntais_greek_stemmer_thesis_final.pdf)
+## Background
+The Greek stemmer is developed as a computational linguistics tool that applies a set of rules and algorithms to transform inflected Greek words into their base or root form. This process, known as stemming, allows for improved analysis and comparison of Greek texts by reducing words to their essential forms.
+The algorithm implemented in this project is based on the research paper "Development of a Stemmer for the Greek Language" by Georgios Ntais. The paper serves as a reference guide, providing insights into the Greek language morphology and the rules employed in the stemming process.
 
 ## Installation 
 Make sure you are running ```go version 1.20.x```
 
-```bash
-git clone https://github.com/petersid2022/greek-stemmer-go.git
-cd greek-stemmer-go
-go build ./lib/greek_stemmer.go 
+## Usage
+To use the Greek stemmer in your Go projects, follow these steps:
+
+1. Install Go: Ensure that Go programming language is installed on your system.
+2. Clone the repository: ```bash git clone https://github.com/petersid2022/greek-stemmer-go```
+3. Import the package: ```go import "github.com/petersid2022/greek-stemmer-go"```
+4. Call the stemmer function: Use the provided function to stem Greek words in your code.
+
+Here's a simple example of how to use the Greek stemmer:
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/petersid2022/greek-stemmer-go"
+)
+
+func main() {
+	word := "καλημέρας"
+	stemmedWord := greekstemmer.Stem(word)
+	fmt.Printf("Stemmed word: %s\n", stemmedWord)
+}
 ```
-**TIP:** Move the binary to ```~/.local/bin```. That way, you can execute the command from the terminal, wherever you are!
+
+## Contributing
+Contributions to this Greek stemmer implementation are welcome! If you find any issues, have suggestions for improvements, or want to extend the functionality, please feel free to open an issue or submit a pull request.
 
 ## License
 
