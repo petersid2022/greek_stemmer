@@ -37,7 +37,7 @@ Contributions to this Greek stemmer implementation are welcome! If you find any 
 
 ## License
 
-[The MIT License]((http://opensource.org/licenses/MIT))
+[The MIT License](http://opensource.org/licenses/MIT)
 
 Copyright (c) 2023 Peter Sideris petersid2022@gmail.com
 
