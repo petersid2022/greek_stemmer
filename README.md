@@ -4,6 +4,16 @@ WORK IN PROGRESS!
 
 Based on this [paper](https://people.dsv.su.se/~hercules/papers/Ntais_greek_stemmer_thesis_final.pdf)
 
+## Installation 
+Make sure you are running ```go version 1.20.x```
+
+```bash
+git clone https://github.com/petersid2022/greek-stemmer-go.git
+cd greek-stemmer-go
+go build ./lib/greek_stemmer.go 
+```
+**TIP:** Move the binary to ```~/.local/bin```. That way, you can execute the command from the terminal, wherever you are!
+
 ## License
 
 (The MIT License)
