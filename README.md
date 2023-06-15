@@ -6,15 +6,13 @@ This repository contains an implementation of a Greek stemmer in Go programming 
 The Greek stemmer is developed as a computational linguistics tool that applies a set of rules and algorithms to transform inflected Greek words into their base or root form. This process, known as stemming, allows for improved analysis and comparison of Greek texts by reducing words to their essential forms.
 The algorithm implemented in this project is based on the research paper "Development of a Stemmer for the Greek Language" by Georgios Ntais. The paper serves as a reference guide, providing insights into the Greek language morphology and the rules employed in the stemming process.
 
-## Installation 
-Make sure you are running ```go version 1.20.x```
 
 ## Usage
 To use the Greek stemmer in your Go projects, follow these steps:
 
-1. Install Go: Ensure that Go programming language is installed on your system.
-2. Clone the repository: ```git clone https://github.com/petersid2022/greek-stemmer-go```
-3. Import the package: ```go import "github.com/petersid2022/greek-stemmer-go"```
+1. Make sure you are running ```go version 1.20.x```
+2. Clone the repository: ```https://github.com/petersid2022/greek-stemmer-go.git```
+3. Import the package: ```import "github.com/petersid2022/greek-stemmer-go"```
 4. Call the stemmer function: Use the provided function to stem Greek words in your code.
 
 Here's a simple example of how to use the Greek stemmer:
@@ -28,7 +26,7 @@ import (
 )
 
 func main() {
-	word := "καλημέρας"
+	word := "ΓΕΓΟΝΟΤΑ"
 	stemmedWord := greekstemmer.Stem(word)
 	fmt.Printf("Stemmed word: %s\n", stemmedWord)
 }
