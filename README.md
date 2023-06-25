@@ -6,6 +6,9 @@ This repository contains an implementation of a Greek stemmer in Go programming 
 The Greek stemmer is developed as a computational linguistics tool that applies a set of rules and algorithms to transform inflected Greek words into their base or root form. This process, known as stemming, allows for improved analysis and comparison of Greek texts by reducing words to their essential forms.
 The algorithm implemented in this project is based on the research paper "Development of a Stemmer for the Greek Language" by Georgios Ntais. The paper serves as a reference guide, providing insights into the Greek language morphology and the rules employed in the stemming process.
 
+## References
+* [Georgios Ntais Development of a Stemmer for the Greek Language](https://people.dsv.su.se/~hercules/papers/Ntais_greek_stemmer_thesis_final.pdf)
+* [GreekStemmer by skroutz](https://github.com/skroutz/greek_stemmer/)
 
 ## Usage
 To use the Greek stemmer in your Go projects, follow these steps:
