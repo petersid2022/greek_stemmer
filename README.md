@@ -26,7 +26,7 @@ import (
 )
 
 func main() {
-	word := "ΓΕΓΟΝΟΤΑ"
+	word := "ΠΟΣΟΤΗΤΑ"
 	stemmedWord := greekstemmer.Stem(word)
 	fmt.Printf("Stemmed word: %s\n", stemmedWord)
 }
