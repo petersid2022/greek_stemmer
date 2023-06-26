@@ -14,26 +14,9 @@ The algorithm implemented in this project is based on the research paper "Develo
 To use the Greek stemmer in your Go projects, follow these steps:
 
 1. Make sure you are running ```go version 1.20.x```
-2. Clone the repository: ```https://github.com/petersid2022/greek-stemmer-go.git```
-3. Import the package: ```import "github.com/petersid2022/greek-stemmer-go"```
-4. Call the stemmer function: Use the provided function to stem Greek words in your code.
-
-Here's a simple example of how to use the Greek stemmer:
-
-```go
-package main
-
-import (
-	"fmt"
-	"github.com/petersid2022/greek-stemmer-go"
-)
-
-func main() {
-	word := "ΓΕΓΟΝΟΤΑ"
-	stemmedWord := greekstemmer.Stem(word)
-	fmt.Printf("Stemmed word: %s\n", stemmedWord)
-}
-```
+2. Clone the repository: ```git clone https://github.com/petersid2022/greek-stemmer-go.git```
+3. Build the binary: ```go build ./lib/greek_stemmer.go```
+4. Move the binary: ```mv ./main ~/.local/bin/greek_stemmer_go```
 
 ## Contributing
 Contributions to this Greek stemmer implementation are welcome! If you find any issues, have suggestions for improvements, or want to extend the functionality, please feel free to open an issue or submit a pull request.
