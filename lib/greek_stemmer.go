@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"regexp"
@@ -18,7 +17,7 @@ type Config struct {
 }
 
 func parseConfigFile(filepath string) Config {
-	jsonFile, err := ioutil.ReadFile(filepath)
+	jsonFile, err := os.ReadFile(filepath)
 
 	if err != nil {
 		log.Fatalf("Failed to read the JSON file: %v", err)
@@ -32,6 +31,41 @@ func parseConfigFile(filepath string) Config {
 	}
 
 	return config
+}
+
+func longStemList(word string) string {
+	stepPattern := `^(.+?)(Α|ΑΓΑΤΕ|ΑΓΑΝ|ΑΕΙ|ΑΜΑΙ|ΑΝ|ΑΣ|ΑΣΑΙ|ΑΤΑΙ|ΑΩ|Ε|ΕΙ|ΕΙΣ|ΕΙΤΕ|
+    ΕΣΑΙ|ΕΣ|ΕΤΑΙ|Ι|ΙΕΜΑΙ|ΙΕΜΑΣΤΕ|ΙΕΤΑΙ|ΙΕΣΑΙ|ΙΕΣΑΣΤΕ|ΙΟΜΑΣΤΑΝ|ΙΟΜΟΥΝ|ΙΟΜΟΥΝΑ|
+    ΙΟΝΤΑΝ|ΙΟΝΤΟΥΣΑΝ|ΙΟΣΑΣΤΑΝ|ΙΟΣΑΣΤΕ|ΙΟΣΟΥΝ|ΙΟΣΟΥΝΑ|ΙΟΤΑΝ|ΙΟΥΜΑ|ΙΟΥΜΑΣΤΕ|
+    ΙΟΥΝΤΑΙ|ΙΟΥΝΤΑΝ|Η|ΗΔΕΣ|ΗΔΩΝ|ΗΘΕΙ|ΗΘΕΙΣ|ΗΘΕΙΤΕ|ΗΘΗΚΑΤΕ|ΗΘΗΚΑΝ|ΗΘΟΥΝ|ΗΘΩ|
+    ΗΚΑΤΕ|ΗΚΑΝ|ΗΣ|ΗΣΑΝ|ΗΣΑΤΕ|ΗΣΕΙ|ΗΣΕΣ|ΗΣΟΥΝ|ΗΣΩ|Ο|ΟΙ|ΟΜΑΙ|ΟΜΑΣΤΑΝ|ΟΜΟΥΝ|ΟΜΟΥΝΑ|
+    ΟΝΤΑΙ|ΟΝΤΑΝ|ΟΝΤΟΥΣΑΝ|ΟΣ|ΟΣΑΣΤΑΝ|ΟΣΑΣΤΕ|ΟΣΟΥΝ|ΟΣΟΥΝΑ|ΟΤΑΝ|ΟΥ|ΟΥΜΑΙ|ΟΥΜΑΣΤΕ|
+    ΟΥΝ|ΟΥΝΤΑΙ|ΟΥΝΤΑΝ|ΟΥΣ|ΟΥΣΑΝ|ΟΥΣΑΤΕ|Υ||ΥΑ|ΥΣ|Ω|ΩΝ|ΟΙΣ)$`
+	r := regexp.MustCompile(stepPattern)
+	matches := r.FindAllStringSubmatch(word, -1)
+
+	if matches == nil {
+		return word
+	}
+
+	for _, match := range matches {
+		st := match[1]
+		suffix := match[2]
+
+		if word == "ΠΑΣΧΑ" {
+			return word
+		}
+
+		word = st
+
+		if st == "ΣΠΟΡ" && suffix != "" {
+			word += "Ο"
+		} else if st == "ΠΑΣΧΑΛΙΝ" && suffix != "" {
+			word = "ΠΑΣΧΑ"
+		}
+	}
+
+	return word
 }
 
 func isgreek(x string) bool {
@@ -101,7 +135,7 @@ func ends_on_vowel2(word string) bool {
 }
 
 func main() {
-	config := parseConfigFile("config/config.json")
+	config := parseConfigFile("/home/petrside/greek-stemmer-go/config/config.json")
 	word := getUserInput()
 
 	if len(word) < 3 && isgreek(word) {
@@ -273,14 +307,203 @@ func main() {
 	                           ΚΑΠΝΟΒΙΟΜΗΧ|ΚΑΤΑΓΑΛ|ΚΛΙΒ|ΚΟΙΛΑΡΦ|ΛΙΒ|ΜΕΓΛΟΒΙΟΜΗΧ|
 	                           ΜΙΚΡΟΒΙΟΜΗΧ|ΝΤΑΒ|ΞΗΡΟΚΛΙΒ|ΟΛΙΓΟΔΑΜ|ΟΛΟΓΑΛ|ΠΕΝΤΑΡΦ|
 	                           ΠΕΡΗΦ|ΠΕΡΙΤΡ|ΠΛΑΤ|ΠΟΛΥΔΑΠ|ΠΟΛΥΜΗΧ|ΣΤΕΦ|ΤΑΒ|ΤΕΤ|
-	                           ΥΠΕΡΗΦ|ΥΠΟΚΟΠ|ΧΑΜΗΛΟΔΑΠ|ΨΗΛΟΤΑΒ)$)$`).MatchString(st); matched || ends_on_vowel2(st){
+	                           ΥΠΕΡΗΦ|ΥΠΟΚΟΠ|ΧΑΜΗΛΟΔΑΠ|ΨΗΛΟΤΑΒ)$)$`).MatchString(st); matched || ends_on_vowel2(st) {
 			stem = st + "ΑΝ"
 		}
 	}
 
+	// Step 5c
+	step5C_pattern := "^(.+?)(ΗΣΕΤΕ)$"
+	matches_5C := getMatchesFromInput(step5C_pattern, stem)
+	if len(matches_5C) > 0 {
+		st := matches_5C[1]
+		stem = st
+	}
 
-    // Step 5c
-    
+	step5C_2_pattern := "^(.+?)(ΕΤΕ)$"
+	matches_5C_2 := getMatchesFromInput(step5C_2_pattern, stem)
+	if len(matches_5C_2) > 0 {
+		st := matches_5C_2[1]
+		stem = st
+		if matched := regexp.MustCompile(`(^(ΟΔ|ΑΙΡ|ΦΟΡ|ΤΑΘ|ΔΙΑΘ|ΣΧ|ΕΝΔ|ΕΥΡ|ΤΙΘ|ΥΠΕΡΘ|ΡΑΘ|ΕΝΘ|ΡΟΘ|ΣΘ|ΠΥΡ|ΑΙΝ|ΣΥΝΔ|ΣΥΝ|ΣΥΝΘ|ΧΩΡ|ΠΟΝ|ΒΡ|ΚΑΘ|ΕΥΘ|ΕΚΘ|ΝΕΤ|ΡΟΝ|ΑΡΚ|ΒΑΡ|ΒΟΛ|ΩΦΕΛ|ΑΒΑΡ|ΒΕΝ|ΕΝΑΡ|ΑΒΡ|ΑΔ|ΑΘ|ΑΝ|ΑΠΛ|ΒΑΡΟΝ|ΝΤΡ|ΣΚ|ΚΟΠ|ΜΠΟΡ|ΝΙΦ|ΠΑΓ|ΠΑΡΑΚΑΛ|ΣΕΡΠ|ΣΚΕΛ|ΣΥΡΦ|ΤΟΚ|Υ|Δ|ΕΜ|ΘΑΡΡ|Θ|ΠΑΡΑΚΑΤΑΘ|ΠΡΟΣΘ|ΣΥΝΘ)$)$`).MatchString(st); matched || ends_on_vowel2(st) {
+			stem += "ΕΤ"
+		}
+	}
+
+	// Step 5d
+	step5D_pattern := "^(.+?)(ΟΝΤΑΣ|ΩΝΤΑΣ)$"
+	matches_5D := getMatchesFromInput(step5D_pattern, stem)
+	if len(matches_5D) > 0 {
+		st := matches_5D[1]
+		stem = st
+		if matched := regexp.MustCompile("(ΑΡΧ)$").MatchString(st); matched {
+			stem += "ΟΝΤ"
+		}
+		if matched := regexp.MustCompile("(ΚΡΕ)$").MatchString(st); matched {
+			stem += "ΩΝΤ"
+		}
+	}
+
+	// Step 5e
+	step5E_pattern := "^(.+?)(ΟΜΑΣΤΕ|ΙΟΜΑΣΤΕ)$"
+	matches_5E := getMatchesFromInput(step5E_pattern, stem)
+	if len(matches_5E) > 0 {
+		st := matches_5E[1]
+		stem = st
+		if matched := regexp.MustCompile("(ΟΝ)$").MatchString(st); matched {
+			stem += "ΟΜΑΣΤ"
+		}
+	}
+
+	// Step 5f
+	step5F_pattern := "^(.+?)(ΙΕΣΤΕ)$"
+	matches_5F := getMatchesFromInput(step5F_pattern, stem)
+	if len(matches_5F) > 0 {
+		st := matches_5F[1]
+		stem = st
+		if matched := regexp.MustCompile(`(^(Π|ΑΠ|ΣΥΜΠ|ΑΣΥΜΠ|ΑΚΑΤΑΠ|ΑΜΕΤΑΜΦ)$)$`).MatchString(st); matched {
+			stem += "IEΣΤ"
+		}
+	}
+
+	step5F_2_pattern := "^(.+?)(ΕΣΤΕ)$"
+	matches_5F_2 := getMatchesFromInput(step5F_2_pattern, stem)
+	if len(matches_5F_2) > 0 {
+		st := matches_5F_2[1]
+		stem = st
+		if matched := regexp.MustCompile(`(^(ΑΛ|ΑΡ|ΕΚΤΕΛ|Ζ|Μ|Ξ|ΠΑΡΑΚΑΛ|ΑΡ|ΠΡΟ|ΝΙΣ)$)$`).MatchString(st); matched {
+			stem += "EΣΤ"
+		}
+	}
+
+	// Step 5g
+	step5G_pattern := "^(.+?)(ΗΘΗΚΑ|ΗΘΗΚΕΣ|ΗΘΗΚΕ)$"
+	matches_5G := getMatchesFromInput(step5G_pattern, stem)
+	if len(matches_5G) > 0 {
+		st := matches_5G[1]
+		stem = st
+	}
+
+	step5G_2_pattern := "^(.+?)(ΗΚΑ|ΗΚΕΣ|ΗΚΕ)$"
+	matches_5G_2 := getMatchesFromInput(step5G_2_pattern, stem)
+	if len(matches_5G_2) > 0 {
+		st := matches_5G_2[1]
+		stem = st
+		if matched := regexp.MustCompile(`^(ΣΚΩΛ|ΣΚΟΥΛ|ΝΑΡΘ|ΣΦ|ΟΘ|ΠΙΘ)$`).MatchString(st); matched || regexp.MustCompile(`^(ΔΙΑΘ|Θ|ΠΑΡΑΚΑΤΑΘ|ΠΡΟΣΘ|ΣΥΝΘ|)$`).MatchString(st) {
+			stem += "ΗΚ"
+		}
+	}
+
+	// Step 5h
+	step5H_pattern := "^(.+?)(ΟΥΣΑ|ΟΥΣΕΣ|ΟΥΣΕ)$"
+	matches_5H := getMatchesFromInput(step5H_pattern, stem)
+	if len(matches_5H) > 0 {
+		st := matches_5H[1]
+		stem = st
+		if matched := regexp.MustCompile(`^(ΦΑΡΜΑΚ|ΧΑΔ|ΑΓΚ|ΑΝΑΡΡ|ΒΡΟΜ|ΕΚΛΙΠ|ΛΑΜΠΙΔ|ΛΕΧ|Μ|ΠΑΤ|Ρ|Λ|ΜΕΔ|ΜΕΣΑΖ|ΥΠΟΤΕΙΝ|
+        ΑΜ|ΑΙΘ|ΑΝΗΚ|ΔΕΣΠΟΖ|ΕΝΔΙΑΦΕΡ|ΔΕ|ΔΕΥΤΕΡΕΥ|ΚΑΘΑΡΕΥ|ΠΛΕ|ΤΣΑ)$`).MatchString(st); matched || regexp.MustCompile(`^(ΠΟΔΑΡ|ΒΛΕΠ|
+        ΠΑΝΤΑΧ|ΦΡΥΔ|ΜΑΝΤΙΛ|ΜΑΛΛ|ΚΥΜΑΤ|ΛΑΧ|ΛΗΓ|ΦΑΓ|ΟΜ|ΠΡΩΤ)$`).MatchString(st) || ends_on_vowel(st) {
+			stem += "ΟΥΣ"
+		}
+	}
+
+	// Step 5i
+	step5I_pattern := "^(.+?)(ΑΓΑ|ΑΓΕΣ|ΑΓΕ)$"
+	matches_5I := getMatchesFromInput(step5I_pattern, stem)
+	if len(matches_5I) > 0 {
+		st := matches_5I[1]
+		stem = st
+		if matched := regexp.MustCompile(`^(ΑΒΑΣΤ|ΠΟΛΥΦ|ΑΔΗΦ|ΠΑΜΦ|Ρ|ΑΣΠ|ΑΦ|ΑΜΑΛ|ΑΜΑΛΛΙ|
+      ΑΝΥΣΤ|ΑΠΕΡ|ΑΣΠΑΡ|ΑΧΑΡ|ΔΕΡΒΕΝ|ΔΡΟΣΟΠ|ΞΕΦ|ΝΕΟΠ|ΝΟΜΟΤ|ΟΛΟΠ|ΟΜΟΤ|ΠΡΟΣΤ|
+      ΠΡΟΣΩΠΟΠ|ΣΥΜΠ|ΣΥΝΤ|Τ|ΥΠΟΤ|ΧΑΡ|ΑΕΙΠ|ΑΙΜΟΣΤ|ΑΝΥΠ|ΑΠΟΤ|ΑΡΤΙΠ|ΔΙΑΤ|ΕΝ|ΕΠΙΤ|
+      ΚΡΟΚΑΛΟΠ|ΣΙΔΗΡΟΠ|Λ|ΝΑΥ|ΟΥΛΑΜ|ΟΥΡ|Π|ΤΡ|Μ)$`).MatchString(st); matched || regexp.MustCompile(`^(ΟΦ|ΠΕΛ|ΧΟΡΤ|ΛΛ|ΣΦ|
+      ΡΠ|ΦΡ|ΠΡ|ΛΟΧ|ΣΜΗΝ)$`).MatchString(st) && !(regexp.MustCompile(`^(ΨΟΦ|ΝΑΥΛΟΧ)$`).MatchString(st) || regexp.MustCompile("ΚΟΛΛ").MatchString(st)) {
+			stem += "ΑΓ"
+		}
+	}
+
+	// Step 5j
+	step5J_pattern := "^(.+?)(ΗΣΕ|ΗΣΟΥ|ΗΣΑ)$"
+	matches_5J := getMatchesFromInput(step5J_pattern, stem)
+	if len(matches_5J) > 0 {
+		st := matches_5J[1]
+		stem = st
+		if matched := regexp.MustCompile(`^(Ν|ΧΕΡΣΟΝ|ΔΩΔΕΚΑΝ|ΕΡΗΜΟΝ|ΜΕΓΑΛΟΝ|ΕΠΤΑΝ|Ι)$`).MatchString(st); matched {
+			stem += "ΗΣ"
+		}
+	}
+
+	// Step 5k
+	step5K_pattern := "^(.+?)(ΗΣΤΕ)$"
+	matches_5K := getMatchesFromInput(step5K_pattern, stem)
+	if len(matches_5K) > 0 {
+		st := matches_5K[1]
+		stem = st
+		if matched := regexp.MustCompile(`^(ΑΣΒ|ΣΒ|ΑΧΡ|ΧΡ|ΑΠΛ|ΑΕΙΜΝ|ΔΥΣΧΡ|ΕΥΧΡ|ΚΟΙΝΟΧΡ|
+                             ΠΑΛΙΜΨ)$`).MatchString(st); matched {
+			stem += "ΗΣΤ"
+		}
+	}
+
+	// Step 5l
+	step5L_pattern := "^(.+?)(ΟΥΝΕ|ΗΣΟΥΝΕ|ΗΘΟΥΝΕ)$"
+	matches_5L := getMatchesFromInput(step5L_pattern, stem)
+	if len(matches_5L) > 0 {
+		st := matches_5L[1]
+		stem = st
+		if matched := regexp.MustCompile(`^(Ν|Ρ|ΣΠΙ|ΣΤΡΑΒΟΜΟΥΤΣ|ΚΑΚΟΜΟΥΤΣ|ΕΞΩΝ)$`).MatchString(st); matched {
+			stem += "ΟΥΝ"
+		}
+	}
+
+	// Step 5m
+	step5M_pattern := "^(.+?)(ΟΥΜΕ|ΗΣΟΥΜΕ|ΗΘΟΥΜΕ)$"
+	matches_5M := getMatchesFromInput(step5M_pattern, stem)
+	if len(matches_5M) > 0 {
+		st := matches_5M[1]
+		stem = st
+		if matched := regexp.MustCompile(`^(ΠΑΡΑΣΟΥΣ|Φ|Χ|ΩΡΙΟΠΛ|ΑΖ|ΑΛΛΟΣΟΥΣ|ΑΣΟΥΣ)$`).MatchString(st); matched {
+			stem += "ΟΥΜ"
+		}
+	}
+
+	// Step 6a
+	step6A_pattern := "^(.+?)(ΜΑΤΟΙ|ΜΑΤΟΥΣ|ΜΑΤΟ|ΜΑΤΑ|ΜΑΤΩΣ|ΜΑΤΩΝ|ΜΑΤΟΣ|ΜΑΤΕΣ|ΜΑΤΗ|ΜΑΤΗΣ|ΜΑΤΟΥ)$"
+	matches_6A := getMatchesFromInput(step6A_pattern, stem)
+	if len(matches_6A) > 0 {
+		st := matches_6A[1]
+		stem = st + "Μ"
+		if matched := regexp.MustCompile("ΓΡΑΜ").MatchString(st); matched {
+			stem += "Α"
+		} else if matched := regexp.MustCompile(`^(ΓΕ|ΣΤΑ)$`).MatchString(st); matched {
+			stem += "ΑΤ"
+		}
+	}
+
+	// Step 6b
+	step6B_pattern := "^(.+?)(ΟΥΑ)$"
+	matches_6B := getMatchesFromInput(step6B_pattern, stem)
+	if len(matches_6B) > 0 {
+		st := matches_6B[1]
+		stem = st + "ΟΥ"
+	}
+    if len(stem) == len(word) {
+        stem = longStemList(stem)
+    }
+
+	// Step 7
+	step7_pattern := "^(.+?)(ΕΣΤΕΡ|ΕΣΤΑΤ|ΟΤΕΡ|ΟΤΑΤ|ΥΤΕΡ|ΥΤΑΤ|ΩΤΕΡ|ΩΤΑΤ)$"
+	matches_7 := getMatchesFromInput(step7_pattern, stem)
+	if len(matches_7) > 0 {
+		st := matches_7[1]
+		stem = st
+		if !regexp.MustCompile(`^(ΕΞ|ΕΣ|ΑΝ|ΚΑΤ|Κ|ΠΡ)$`).MatchString(st) {
+			// do nothing
+		}
+		if matched := regexp.MustCompile(`^(ΚΑ|Μ|ΕΛΕ|ΛΕ|ΔΕ)$`).MatchString(st); matched {
+			stem += "ΥΤ"
+		}
+	}
 
 	fmt.Println(stem)
 }
