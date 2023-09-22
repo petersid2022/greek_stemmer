@@ -173,8 +173,9 @@ func main() {
 	matches_2A := getMatchesFromInput(step2A_pattern, stem)
 	if len(matches_2A) > 0 {
 		st := matches_2A[1]
-		if matched := regexp.MustCompile(`((ΟΚ|ΜΑΜ|ΜΑΝ|ΜΠΑΜΠ|ΠΑΤΕΡ|ΓΙΑΓΙ|ΝΤΑΝΤ|ΚΥΡ|ΘΕΙ|ΠΕΘΕΡ|ΜΟΥΣΑΜ|ΚΑΠΛΑΜ|ΠΑΡ|ΨΑΡ|ΤΖΟΥΡ|ΤΑΜΠΟΥΡ))$`).MatchString(st); matched {
-			stem = st + "ΑΔ"
+        stem = st
+		if matched := regexp.MustCompile(`((ΟΚ|ΜΑΜ|ΜΑΝ|ΜΠΑΜΠ|ΠΑΤΕΡ|ΝΤΑΝΤ|ΚΥΡ|ΘΕΙ|ΠΕΘΕΡ|ΜΟΥΣΑΜ|ΚΑΠΛΑΜ|ΠΑΡ|ΨΑΡ|ΤΖΟΥΡ|ΤΑΜΠΟΥΡ))$`).MatchString(st); matched {
+			stem += "ΑΔ"
 		}
 	}
 
@@ -183,8 +184,9 @@ func main() {
 	matches_2B := getMatchesFromInput(step2B_pattern, stem)
 	if len(matches_2B) > 0 {
 		st := matches_2B[1]
+        stem = st
 		if matched := regexp.MustCompile(`((ΟΠ|ΙΠ|ΕΜΠ|ΥΠ|ΓΗΠ|ΔΑΠ|ΚΡΑΣΠ|ΜΙΛ))$`).MatchString(st); matched {
-			stem = st + "EΔ"
+			stem += "EΔ"
 		}
 	}
 
@@ -193,9 +195,10 @@ func main() {
 	matches_2C := getMatchesFromInput(step2C_pattern, stem)
 	if len(matches_2C) > 0 {
 		st := matches_2C[1]
+        stem = st
 		if matched := regexp.MustCompile(`((ΑΡΚ|ΚΑΛΙΑΚ|ΠΕΤΑΛ|ΛΙΧ|ΠΛΕΞ|ΣΚ|Σ|ΦΛ|ΦΡ|ΒΕΛ|ΛΟΥΛ|ΧΝ|ΣΠ|ΤΡΑΓ|ΦΕ))$`).MatchString(st); matched {
-			stem = st + "ΟΥΔ"
-		}
+            stem += "ΟΥΔ"
+        }
 	}
 
 	// Step 2d
@@ -203,8 +206,9 @@ func main() {
 	matches_2D := getMatchesFromInput(step2D_pattern, stem)
 	if len(matches_2D) > 0 {
 		st := matches_2D[1]
+        stem = st
 		if matched := regexp.MustCompile(`(^(Θ|Δ|ΕΛ|ΓΑΛ|Ν|Π|ΙΔ|ΠΑΡ|ΣΤΕΡ|ΟΡΦ|ΑΝΔΡ|ΑΝΤΡ))$`).MatchString(st); matched {
-			stem = st + "Ε"
+			stem += "Ε"
 		}
 	}
 
@@ -223,6 +227,7 @@ func main() {
 	matches_3B := getMatchesFromInput(step3B_pattern, stem)
 	if len(matches_3B) > 0 {
 		st := matches_3B[1]
+        stem = st
 		big_regex := `^(ΑΓ|ΑΓΓΕΛ|ΑΓΡ|
                      ΑΕΡ|ΑΘΛ|ΑΚΟΥΣ|ΑΞ|ΑΣ|Β|ΒΙΒΛ|ΒΥΤ|Γ|ΓΙΑΓ|ΓΩΝ|Δ|ΔΑΝ|ΔΗΛ|ΔΗΜ|
                      ΔΟΚΙΜ|ΕΛ|ΖΑΧΑΡ|ΗΛ|ΗΠ|ΙΔ|ΙΣΚ|ΙΣΤ|ΙΟΝ|ΙΩΝ|ΚΙΜΩΛ|ΚΟΛΟΝ|ΚΟΡ|
@@ -231,11 +236,11 @@ func main() {
                      ΣΤΑΔ|ΣΥΡ|ΤΗΛ|ΤΕΤΡΑΔ|ΤΙΜ|ΤΟΚ|ΤΟΠ|ΤΡΟΧ|ΦΙΛ|ΦΩΤ|Χ|ΧΙΛ|ΧΡΩΜ|ΧΩΡ)$`
 		match1, _ := regexp.MatchString(big_regex, st)
 		if len(st) < 2 || ends_on_vowel(st) || match1 {
-			stem = st + "Ι"
+			stem += "Ι"
 		}
 		match2, _ := regexp.MatchString("^(ΠΑΛ)$", st)
 		if match2 {
-			stem = st + "ΑΙ"
+			stem += "ΑΙ"
 		}
 	}
 
@@ -244,6 +249,7 @@ func main() {
 	matches_4 := getMatchesFromInput(step4_pattern, stem)
 	if len(matches_4) > 0 {
 		st := matches_4[1]
+        stem = st
 		big_regex := `^(ΑΔ|ΑΛ|ΑΜΑΝ|ΑΜΕΡ|ΑΜΜΟΧΑΛ|
                     ΑΝΗΘ|ΑΝΤΙΔ|ΑΠΛ|ΑΤΤ|ΑΦΡ|ΒΑΣ|ΒΡΩΜ|ΓΕΝ|ΓΕΡ|Δ|ΔΙΑΦΟΡ|ΔΙΚΑΝ|
                     ΔΥΤ|ΕΙΔ|ΕΝΔ|ΕΞΩΔ|ΗΘ|ΘΕΤ|ΚΑΛΛΙΝ|ΚΑΛΠ|ΚΑΤΑΔ|ΚΟΥΖΙΝ|ΚΡ|ΚΩΔ|
@@ -255,7 +261,7 @@ func main() {
 		match1, _ := regexp.MatchString(big_regex, st)
 		match2, _ := regexp.MatchString("(ΦΟΙΝ)$", st)
 		if ends_on_vowel(st) || match1 || match2 {
-			stem = st + "ΙΚ"
+			stem += "ΙΚ"
 		} else if stem == "ΠΑΣΧΑΛΙΑΤ" {
 			stem = "ΠΑΣΧΑ"
 		}
@@ -277,8 +283,9 @@ func main() {
 	matches_5A_2 := getMatchesFromInput(step5A_2_pattern, stem)
 	if len(matches_5A_2) > 0 {
 		st := matches_5A_2[1]
+        stem = st
 		if matched := regexp.MustCompile(`(^(ΑΝΑΠ|ΑΠΟΘ|ΑΠΟΚ|ΑΠΟΣΤ|ΒΟΥΒ|ΞΕΘ|ΟΥΛ|ΠΕΘ|ΠΙΚΡ|ΠΟΤ|ΣΙΧ|Χ)$)$`).MatchString(st); matched {
-			stem = st + "ΑΜ"
+			stem += "ΑΜ"
 		}
 	}
 
@@ -287,8 +294,9 @@ func main() {
 	matches_5B := getMatchesFromInput(step5B_pattern, stem)
 	if len(matches_5B) > 0 {
 		st := matches_5B[1]
+        stem = st
 		if matched := regexp.MustCompile(`(^(ΤΡ|ΤΣ)$)$`).MatchString(st); matched {
-			stem = st + "ΑΓΑΝ"
+			stem += "ΑΓΑΝ"
 		}
 	}
 
@@ -296,6 +304,7 @@ func main() {
 	matches_5B_2 := getMatchesFromInput(step5B_2_pattern, stem)
 	if len(matches_5B_2) > 0 {
 		st := matches_5B_2[1]
+        stem = st
 		if matched := regexp.MustCompile(`(^(ΒΕΤΕΡ|ΒΟΥΛΚ|ΒΡΑΧΜ|Γ|ΔΡΑΔΟΥΜ|Θ|ΚΑΛΠΟΥΖ|ΚΑΣΤΕΛ|
 	                           ΚΟΡΜΟΡ|ΛΑΟΠΛ|ΜΩΑΜΕΘ|Μ|ΜΟΥΣΟΥΛΜ|Ν|ΟΥΛ|Π|ΠΕΛΕΚ|
 	                           ΠΛ|ΠΟΛΙΣ|ΠΟΡΤΟΛ|ΣΑΡΑΚΑΤΣ|ΣΟΥΛΤ|ΤΣΑΡΛΑΤ|ΟΡΦ|ΤΣΙΓΓ|
@@ -308,7 +317,7 @@ func main() {
 	                           ΜΙΚΡΟΒΙΟΜΗΧ|ΝΤΑΒ|ΞΗΡΟΚΛΙΒ|ΟΛΙΓΟΔΑΜ|ΟΛΟΓΑΛ|ΠΕΝΤΑΡΦ|
 	                           ΠΕΡΗΦ|ΠΕΡΙΤΡ|ΠΛΑΤ|ΠΟΛΥΔΑΠ|ΠΟΛΥΜΗΧ|ΣΤΕΦ|ΤΑΒ|ΤΕΤ|
 	                           ΥΠΕΡΗΦ|ΥΠΟΚΟΠ|ΧΑΜΗΛΟΔΑΠ|ΨΗΛΟΤΑΒ)$)$`).MatchString(st); matched || ends_on_vowel2(st) {
-			stem = st + "ΑΝ"
+			stem += "ΑΝ"
 		}
 	}
 
