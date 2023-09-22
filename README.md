@@ -1,5 +1,4 @@
 # Greek stemmer written in Go
-WORK IN PROGRESS!
 This repository contains an implementation of a Greek stemmer in Go programming language, based on the [paper](https://people.dsv.su.se/~hercules/papers/Ntais_greek_stemmer_thesis_final.pdf) written by Georgios Ntais. The stemmer is designed to extract the stem or root form of Greek words, enabling various natural language processing (NLP) tasks such as text analysis, information retrieval, and machine translation.
 
 ## Background
