@@ -1,8 +1,7 @@
-package main
+package greek_stemmer_go 
 
 import (
-	"bufio"
-	"encoding/json"
+    "encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -16,18 +15,22 @@ type Config struct {
 	ProtectedWords  []string          "json:\"protected_words\""
 }
 
-func parseConfigFile(filepath string) Config {
-	jsonFile, err := os.ReadFile(filepath)
+func getFilePathContents() Config{
+    filePath := "../config/config.json"
 
+	// Read the file
+	content, err := os.ReadFile(filePath)
 	if err != nil {
-		log.Fatalf("Failed to read the JSON file: %v", err)
+		log.Fatal(err)
 	}
 
+    // Create a Config struct to unmarshal the JSON data into
 	var config Config
-	err = json.Unmarshal(jsonFile, &config)
 
+	// Unmarshal the JSON data into the Config struct
+	err = json.Unmarshal(content, &config)
 	if err != nil {
-		log.Fatalf("Failed to unmarshal the JSON data: %v", err)
+		log.Fatal(err)
 	}
 
 	return config
@@ -83,20 +86,6 @@ func contains(word string, pool []string) bool {
 	return false
 }
 
-func getUserInput() string {
-	reader := bufio.NewReader(os.Stdin)
-
-	fmt.Print("Input Greek capital letters only! : ")
-
-	input, err := reader.ReadString('\n')
-
-	if err != nil {
-		log.Fatalf("Failed to read input: %v", err)
-	}
-
-	return strings.ReplaceAll(input, "\n", "")
-}
-
 func step1Regex(step1Exceptions map[string]string) (*regexp.Regexp, error) {
 	suffixes := make([]string, 0, len(step1Exceptions))
 	for suffix := range step1Exceptions {
@@ -134,9 +123,8 @@ func ends_on_vowel2(word string) bool {
 	return false
 }
 
-func main() {
-	config := parseConfigFile("/home/petrside/greek-stemmer-go/config/config.json")
-	word := getUserInput()
+func GreekStemmer(word string) string{
+    config := getFilePathContents()
 
 	if len(word) < 3 && isgreek(word) {
 		fmt.Println(word)
@@ -514,5 +502,5 @@ func main() {
 		}
 	}
 
-	fmt.Println(stem)
+    return stem
 }
