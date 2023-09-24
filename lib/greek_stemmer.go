@@ -1,4 +1,4 @@
-package greek_stemmer_go 
+package greek_stemmer 
 
 import (
     "encoding/json"
