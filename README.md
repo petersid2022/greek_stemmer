@@ -1,4 +1,5 @@
 # Greek stemmer library written in Go
+[![Go Report Card](https://goreportcard.com/badge/github.com/petersid2022/greek_stemmer)](https://goreportcard.com/report/github.com/petersid2022/greek_stemmer) \
 This repository contains an implementation of a Greek stemmer library written in Go, based on this [paper](https://people.dsv.su.se/~hercules/papers/Ntais_greek_stemmer_thesis_final.pdf) written by Georgios Ntais. The stemmer is designed to extract the stem or root form of Greek words, enabling various natural language processing (NLP) tasks such as text analysis, information retrieval, and machine translation.
 
 ## Background
@@ -36,3 +37,4 @@ Contributions to this Greek stemmer implementation are welcome! If you find any 
 
 ## License
 This project is licensed under the MIT License. Please see the [LICENSE](./LICENSE) file for more details.
+    
