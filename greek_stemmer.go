@@ -1,16 +1,16 @@
-package greek_stemmer 
+package greek_stemmer
 
 import (
-    "encoding/json"
+	"embed"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 	"regexp"
 	"strings"
-    "embed"
 )
 
-//go:embed config/config.json
+//go:embed config.json
 var configJSON embed.FS
 
 type Config struct {
@@ -20,21 +20,17 @@ type Config struct {
 }
 
 func GetConfig() (Config, error) {
-    // Read the embedded file
-    content, err := configJSON.ReadFile("config/config.json")
-    if err != nil {
-        return Config{}, err
-    }
+	content, err := configJSON.ReadFile("config.json")
+	if err != nil {
+		return Config{}, err
+	}
+	var config Config
 
-    // Create a Config struct to unmarshal the JSON data into
-    var config Config
+	if err := json.Unmarshal(content, &config); err != nil {
+		return Config{}, err
+	}
 
-    // Unmarshal the JSON data into the Config struct
-    if err := json.Unmarshal(content, &config); err != nil {
-        return Config{}, err
-    }
-
-    return config, nil
+	return config, nil
 }
 
 func longStemList(word string) string {
@@ -124,8 +120,11 @@ func ends_on_vowel2(word string) bool {
 	return false
 }
 
-func GreekStemmer(word string) string{
-    config := getFilePathContents()
+func GreekStemmer(word string) string {
+	config, err := GetConfig()
+	if err != nil {
+        log.Fatalf("Failed to retrieve config: %v", err)
+	}
 
 	if len(word) < 3 && isgreek(word) {
 		fmt.Println(word)
@@ -162,7 +161,7 @@ func GreekStemmer(word string) string{
 	matches_2A := getMatchesFromInput(step2A_pattern, stem)
 	if len(matches_2A) > 0 {
 		st := matches_2A[1]
-        stem = st
+		stem = st
 		if matched := regexp.MustCompile(`((ΟΚ|ΜΑΜ|ΜΑΝ|ΜΠΑΜΠ|ΠΑΤΕΡ|ΝΤΑΝΤ|ΚΥΡ|ΘΕΙ|ΠΕΘΕΡ|ΜΟΥΣΑΜ|ΚΑΠΛΑΜ|ΠΑΡ|ΨΑΡ|ΤΖΟΥΡ|ΤΑΜΠΟΥΡ))$`).MatchString(st); matched {
 			stem += "ΑΔ"
 		}
@@ -173,7 +172,7 @@ func GreekStemmer(word string) string{
 	matches_2B := getMatchesFromInput(step2B_pattern, stem)
 	if len(matches_2B) > 0 {
 		st := matches_2B[1]
-        stem = st
+		stem = st
 		if matched := regexp.MustCompile(`((ΟΠ|ΙΠ|ΕΜΠ|ΥΠ|ΓΗΠ|ΔΑΠ|ΚΡΑΣΠ|ΜΙΛ))$`).MatchString(st); matched {
 			stem += "EΔ"
 		}
@@ -184,10 +183,10 @@ func GreekStemmer(word string) string{
 	matches_2C := getMatchesFromInput(step2C_pattern, stem)
 	if len(matches_2C) > 0 {
 		st := matches_2C[1]
-        stem = st
+		stem = st
 		if matched := regexp.MustCompile(`((ΑΡΚ|ΚΑΛΙΑΚ|ΠΕΤΑΛ|ΛΙΧ|ΠΛΕΞ|ΣΚ|Σ|ΦΛ|ΦΡ|ΒΕΛ|ΛΟΥΛ|ΧΝ|ΣΠ|ΤΡΑΓ|ΦΕ))$`).MatchString(st); matched {
-            stem += "ΟΥΔ"
-        }
+			stem += "ΟΥΔ"
+		}
 	}
 
 	// Step 2d
@@ -195,7 +194,7 @@ func GreekStemmer(word string) string{
 	matches_2D := getMatchesFromInput(step2D_pattern, stem)
 	if len(matches_2D) > 0 {
 		st := matches_2D[1]
-        stem = st
+		stem = st
 		if matched := regexp.MustCompile(`(^(Θ|Δ|ΕΛ|ΓΑΛ|Ν|Π|ΙΔ|ΠΑΡ|ΣΤΕΡ|ΟΡΦ|ΑΝΔΡ|ΑΝΤΡ))$`).MatchString(st); matched {
 			stem += "Ε"
 		}
@@ -216,7 +215,7 @@ func GreekStemmer(word string) string{
 	matches_3B := getMatchesFromInput(step3B_pattern, stem)
 	if len(matches_3B) > 0 {
 		st := matches_3B[1]
-        stem = st
+		stem = st
 		big_regex := `^(ΑΓ|ΑΓΓΕΛ|ΑΓΡ|
                      ΑΕΡ|ΑΘΛ|ΑΚΟΥΣ|ΑΞ|ΑΣ|Β|ΒΙΒΛ|ΒΥΤ|Γ|ΓΙΑΓ|ΓΩΝ|Δ|ΔΑΝ|ΔΗΛ|ΔΗΜ|
                      ΔΟΚΙΜ|ΕΛ|ΖΑΧΑΡ|ΗΛ|ΗΠ|ΙΔ|ΙΣΚ|ΙΣΤ|ΙΟΝ|ΙΩΝ|ΚΙΜΩΛ|ΚΟΛΟΝ|ΚΟΡ|
@@ -238,7 +237,7 @@ func GreekStemmer(word string) string{
 	matches_4 := getMatchesFromInput(step4_pattern, stem)
 	if len(matches_4) > 0 {
 		st := matches_4[1]
-        stem = st
+		stem = st
 		big_regex := `^(ΑΔ|ΑΛ|ΑΜΑΝ|ΑΜΕΡ|ΑΜΜΟΧΑΛ|
                     ΑΝΗΘ|ΑΝΤΙΔ|ΑΠΛ|ΑΤΤ|ΑΦΡ|ΒΑΣ|ΒΡΩΜ|ΓΕΝ|ΓΕΡ|Δ|ΔΙΑΦΟΡ|ΔΙΚΑΝ|
                     ΔΥΤ|ΕΙΔ|ΕΝΔ|ΕΞΩΔ|ΗΘ|ΘΕΤ|ΚΑΛΛΙΝ|ΚΑΛΠ|ΚΑΤΑΔ|ΚΟΥΖΙΝ|ΚΡ|ΚΩΔ|
@@ -272,7 +271,7 @@ func GreekStemmer(word string) string{
 	matches_5A_2 := getMatchesFromInput(step5A_2_pattern, stem)
 	if len(matches_5A_2) > 0 {
 		st := matches_5A_2[1]
-        stem = st
+		stem = st
 		if matched := regexp.MustCompile(`(^(ΑΝΑΠ|ΑΠΟΘ|ΑΠΟΚ|ΑΠΟΣΤ|ΒΟΥΒ|ΞΕΘ|ΟΥΛ|ΠΕΘ|ΠΙΚΡ|ΠΟΤ|ΣΙΧ|Χ)$)$`).MatchString(st); matched {
 			stem += "ΑΜ"
 		}
@@ -283,7 +282,7 @@ func GreekStemmer(word string) string{
 	matches_5B := getMatchesFromInput(step5B_pattern, stem)
 	if len(matches_5B) > 0 {
 		st := matches_5B[1]
-        stem = st
+		stem = st
 		if matched := regexp.MustCompile(`(^(ΤΡ|ΤΣ)$)$`).MatchString(st); matched {
 			stem += "ΑΓΑΝ"
 		}
@@ -293,7 +292,7 @@ func GreekStemmer(word string) string{
 	matches_5B_2 := getMatchesFromInput(step5B_2_pattern, stem)
 	if len(matches_5B_2) > 0 {
 		st := matches_5B_2[1]
-        stem = st
+		stem = st
 		if matched := regexp.MustCompile(`(^(ΒΕΤΕΡ|ΒΟΥΛΚ|ΒΡΑΧΜ|Γ|ΔΡΑΔΟΥΜ|Θ|ΚΑΛΠΟΥΖ|ΚΑΣΤΕΛ|
 	                           ΚΟΡΜΟΡ|ΛΑΟΠΛ|ΜΩΑΜΕΘ|Μ|ΜΟΥΣΟΥΛΜ|Ν|ΟΥΛ|Π|ΠΕΛΕΚ|
 	                           ΠΛ|ΠΟΛΙΣ|ΠΟΡΤΟΛ|ΣΑΡΑΚΑΤΣ|ΣΟΥΛΤ|ΤΣΑΡΛΑΤ|ΟΡΦ|ΤΣΙΓΓ|
@@ -485,9 +484,9 @@ func GreekStemmer(word string) string{
 		st := matches_6B[1]
 		stem = st + "ΟΥ"
 	}
-    if len(stem) == len(word) {
-        stem = longStemList(stem)
-    }
+	if len(stem) == len(word) {
+		stem = longStemList(stem)
+	}
 
 	// Step 7
 	step7_pattern := "^(.+?)(ΕΣΤΕΡ|ΕΣΤΑΤ|ΟΤΕΡ|ΟΤΑΤ|ΥΤΕΡ|ΥΤΑΤ|ΩΤΕΡ|ΩΤΑΤ)$"
@@ -503,5 +502,5 @@ func GreekStemmer(word string) string{
 		}
 	}
 
-    return stem
+	return stem
 }
