@@ -7,7 +7,11 @@ import (
 	"os"
 	"regexp"
 	"strings"
+    "embed"
 )
+
+//go:embed config/config.json
+var configJSON embed.FS
 
 type Config struct {
 	Step1Exceptions map[string]string "json:\"step_1_exceptions\""
@@ -15,25 +19,22 @@ type Config struct {
 	ProtectedWords  []string          "json:\"protected_words\""
 }
 
-func getFilePathContents() Config{
-    filePath := "../config/config.json"
-
-	// Read the file
-	content, err := os.ReadFile(filePath)
-	if err != nil {
-		log.Fatal(err)
-	}
+func GetConfig() (Config, error) {
+    // Read the embedded file
+    content, err := configJSON.ReadFile("config/config.json")
+    if err != nil {
+        return Config{}, err
+    }
 
     // Create a Config struct to unmarshal the JSON data into
-	var config Config
+    var config Config
 
-	// Unmarshal the JSON data into the Config struct
-	err = json.Unmarshal(content, &config)
-	if err != nil {
-		log.Fatal(err)
-	}
+    // Unmarshal the JSON data into the Config struct
+    if err := json.Unmarshal(content, &config); err != nil {
+        return Config{}, err
+    }
 
-	return config
+    return config, nil
 }
 
 func longStemList(word string) string {
