@@ -14,7 +14,7 @@ The algorithm implemented in this project is based on the research paper "Develo
 To use the Greek stemmer in your Go projects, follow these steps:
 
 1. Make sure you are running ```go version 1.20.x```
-2. Go get the libary ```go get github.com/petersid2022/greek_stemmer@latest```
+2. Get the libary ```go get github.com/petersid2022/greek_stemmer@latest```
 3. Import it ```import "github.com/petersid2022/greek_stemmer"```
 
 ## Example
