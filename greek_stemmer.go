@@ -13,21 +13,21 @@ import (
 //go:embed config.json
 var configJSON embed.FS
 
-type Config struct {
+type conf struct {
 	Step1Exceptions map[string]string "json:\"step_1_exceptions\""
 	Step0Exceptions map[string]string "json:\"step_0_exceptions\""
 	ProtectedWords  []string          "json:\"protected_words\""
 }
 
-func GetConfig() (Config, error) {
+func getcnfg() (conf, error) {
 	content, err := configJSON.ReadFile("config.json")
 	if err != nil {
-		return Config{}, err
+		return conf{}, err
 	}
-	var config Config
+	var config conf
 
 	if err := json.Unmarshal(content, &config); err != nil {
-		return Config{}, err
+		return conf{}, err
 	}
 
 	return config, nil
@@ -121,7 +121,7 @@ func ends_on_vowel2(word string) bool {
 }
 
 func GreekStemmer(word string) string {
-	config, err := GetConfig()
+	config, err := getcnfg()
 	if err != nil {
         log.Fatalf("Failed to retrieve config: %v", err)
 	}
